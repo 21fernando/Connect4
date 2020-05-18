@@ -4,6 +4,8 @@ public class SinglePlayerConnectFour implements BoardGame{
     private int[][] board; // game board for playing ConnectFour
     private int currentPlayer; // stores the current player's turn
     private Position[] winningPositions; //stores row+colum coordinates when someone wins
+    private final int COMPUTER = 2; // Maximizing
+    private final int PLAYER = 1; // Minimizing
     /**
      * Prepares the board for a new game.
      */
@@ -13,7 +15,7 @@ public class SinglePlayerConnectFour implements BoardGame{
         int numCols = 7;
         board = new int[numRows][numCols];
         winningPositions = new Position[4];
-        currentPlayer = 1;
+        currentPlayer = PLAYER;
         for(int r=0; r<numRows; r++){
             for(int c=0; c<numCols; c++){
                 board[r][c] = 0;
@@ -95,6 +97,40 @@ public class SinglePlayerConnectFour implements BoardGame{
         return 0;
     }
 
+    private int gameWon(int[][] board){
+        for(int r=0; r<6; r++){
+            for(int c=0; c<7; c++){
+                if(board[r][c] != 0){
+                    if(c<4){
+                        //decreasing diagonal
+                        if(r<3){
+                            if(board[r][c] == board[r+1][c+1] && board[r][c] == board[r+2][c+2]  && board[r][c] == board[r+2][c+2]){
+                                return board[r][c];
+                            }
+                        }
+                        //increasing diagonal
+                        if(r>2){
+                            if(board[r][c] == board[r-1][c+1] && board[r][c] == board[r-2][c+2] && board[r][c] == board[r-3][c+3]){
+                                return board[r][c];
+                            }
+                        }
+                        //horizontal
+                        if(board[r][c] == board[r][c+1] && board[r][c] == board[r][c+2] && board[r][c] == board[r][c+3]){
+                            return board[r][c];
+                        }
+                    }
+                    //vertical wins
+                    if(r<3){
+                        if(board[r][c] == board[r+1][c] && board[r][c] == board[r+2][c] && board[r][c] == board[r+3][c]){
+                            return board[r][c];
+                        }
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
     /**
      * Where are the tokens that determine who the winner is?
      * @return the locations of the pieces that determine the game winner.
@@ -124,7 +160,7 @@ public class SinglePlayerConnectFour implements BoardGame{
             if(board[r][column] == 0){
                 System.out.println(currentPlayer + " playing at row: " + r + " col: " + column);
                 board[r][column] = currentPlayer;
-                currentPlayer = (currentPlayer ==1)? 2: 1;
+                currentPlayer = (currentPlayer == PLAYER)? COMPUTER: PLAYER;
                 return;
             }
         }
@@ -143,14 +179,21 @@ public class SinglePlayerConnectFour implements BoardGame{
     }
 
     public void computerMove(){
-        play(minimax(board, 7,5));
+        int column = minimax(board, 7,5);
+        for(int r = 5; r>=0; r--){
+            if(board[r][column] == 0){
+                System.out.println(currentPlayer + " playing at row: " + r + " col: " + column);
+                board[r][column] = currentPlayer;
+                currentPlayer = (currentPlayer ==1)? 2: 1;
+                return;
+            }
+        }
     }
 
     private int minimax(int[][] board, int depth, int player){
-        ArrayList<Integer> choices = new ArrayList<>();
-        for(int c =0 ; c< 7; c++){
-            if(!columnFull(c)) choices.add(c);
+        if(gameWon(board) == COMPUTER){
+
         }
-        return choices.get((int)(Math.random()*choices.size()));
+        return 0;
     }
 }

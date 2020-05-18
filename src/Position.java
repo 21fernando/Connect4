@@ -24,6 +24,10 @@ public class Position {
         return this.col;
     }
 
+    public static void test(){
+        System.out.println("TEST");
+    }
+
     public boolean equals(Object other){
         if(!(other instanceof Position)){
             return false;

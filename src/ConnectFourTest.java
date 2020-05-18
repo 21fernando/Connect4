@@ -24,6 +24,7 @@ public class ConnectFourTest {
 	@Before
 	public void setUp() throws Exception {
 		tester = new ConnectFour();
+		tester.newGame();
 		array = new int[6][7];
 		winningPositions = new Position[4];
 		startPos = -1;
@@ -234,9 +235,12 @@ public class ConnectFourTest {
 				tester.play(c);
 			}
 		}
-		
+		for(int[] row : tester.getBoard()){
+			System.out.println(Arrays.toString(row));
+		}
 		for(int c = 0; c < 7; c++)
 			assertTrue("Column " + c + " is full.", tester.columnFull(c));
+		System.out.println(Arrays.toString(tester.getWinningPositions()));
 
 		assertEquals("A full board with non-matching numbers has no winner",
 				0, tester.getWinner());
@@ -298,7 +302,7 @@ public class ConnectFourTest {
 		tempPos = new Position(rowStart, startPos);
 		for(int i = 0; i < winningPositions.length; i++){
 			tempPos.setRow(rowStart);
-			//System.out.println("DEBUG: " + tempPos + " - " + winningPositions[i]);
+			//System.out.println("DEBUG: " + tempPos.getRow() + "," +tempPos.getColumn() + " - " + winningPositions[i].getRow() + "," + winningPositions[i].getColumn());
 			assertTrue("Correct win placement", tempPos.equals(winningPositions[i]));
 			rowStart--;
 		}

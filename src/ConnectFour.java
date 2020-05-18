@@ -52,11 +52,11 @@ public class ConnectFour implements BoardGame{
                     if(c<4){
                         //decreasing diagonal
                         if(r<3){
-                            if(board[r][c] == board[r+1][c+1] && board[r][c] == board[r+2][c+2]  && board[r][c] == board[r+2][c+2]){
-                                winningPositions[0] = new Position(r,c);
-                                winningPositions[1] = new Position(r+1,c+1);
-                                winningPositions[2] = new Position(r+2,c+2);
-                                winningPositions[3] = new Position(r+3,c+3);
+                            if(board[r][c] == board[r+1][c+1] && board[r][c] == board[r+2][c+2]  && board[r][c] == board[r+3][c+3]){
+                                winningPositions[3] = new Position(r,c);
+                                winningPositions[2] = new Position(r+1,c+1);
+                                winningPositions[1] = new Position(r+2,c+2);
+                                winningPositions[0] = new Position(r+3,c+3);
                                 return board[r][c];
                             }
                         }
@@ -82,10 +82,10 @@ public class ConnectFour implements BoardGame{
                     //vertical wins
                     if(r<3){
                         if(board[r][c] == board[r+1][c] && board[r][c] == board[r+2][c] && board[r][c] == board[r+3][c]){
-                            winningPositions[0] = new Position(r,c);
-                            winningPositions[1] = new Position(r+1,c);
-                            winningPositions[2] = new Position(r+2,c);
-                            winningPositions[3] = new Position(r+3,c);
+                            winningPositions[3] = new Position(r,c);
+                            winningPositions[2] = new Position(r+1,c);
+                            winningPositions[1] = new Position(r+2,c);
+                            winningPositions[0] = new Position(r+3,c);
                             return board[r][c];
                         }
                     }
@@ -120,12 +120,13 @@ public class ConnectFour implements BoardGame{
      */
     @Override
     public void play(int column) {
-        for(int r = 5; r>=0; r--){
-            if(board[r][column] == 0){
-                System.out.println(currentPlayer + " playing at row: " + r + " col: " + column);
-                board[r][column] = currentPlayer;
-                currentPlayer = (currentPlayer ==1)? 2: 1;
-                return;
+        if(!columnFull(column)){
+            for(int r = board.length-1; r>=0; r--){
+                if(board[r][column] == 0){
+                    board[r][column] = currentPlayer;
+                    currentPlayer = (currentPlayer ==1)? 2: 1;
+                    return;
+                }
             }
         }
 }
