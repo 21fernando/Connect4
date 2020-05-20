@@ -129,7 +129,7 @@ public class ConnectFour implements BoardGame{
                 }
             }
         }
-}
+    }
 
     /**
      * What is the current board configuration?

@@ -24,8 +24,7 @@ public class SinglePlayerConnectFourGUI extends JFrame implements ActionListener
     private Timer timer;	//to be used once the game has been won
 
     private BoardGame game;
-
-    private boolean playerFirst;
+    private Computer computer;
 
     /**
      * Constructor for class ConnectFourDemo calls multiple private helper methods to
@@ -38,6 +37,7 @@ public class SinglePlayerConnectFourGUI extends JFrame implements ActionListener
         super(title);
         //establish the underlying data for the game
         game = new SinglePlayerConnectFour();
+        computer = new Computer();
 
         //GUI
         container = getContentPane();
@@ -53,8 +53,6 @@ public class SinglePlayerConnectFourGUI extends JFrame implements ActionListener
 
         //initialize the timer for later use
         timer = new Timer(500, this);
-
-        playerFirst = true;//(int) (Math.random() * 2) == 1;
     }
 
     /**
@@ -94,17 +92,37 @@ public class SinglePlayerConnectFourGUI extends JFrame implements ActionListener
         else if(e.getSource() == quitButton)
             System.exit(0);
         else	{
-            if(!game.gameOver())	{
-                System.out.println("PLAYER TURN");
-                playerTurn(e);
-                refreshBoard(game.getBoard());
-            }
             if(!game.gameOver()){
-                System.out.println("COMPUTER TURN");
-                ((SinglePlayerConnectFour)game).computerMove();
-                refreshBoard(game.getBoard());
+                for(int r = 0; r < 6; r++)	{
+                    for(int c = 0; c < 7; c++)	{
+                        if(e.getSource() == buttons[r][c])	{
+                            game.play(c);
+                            refreshBoard(game.getBoard());
+                            if(game.gameOver())	{
+                                if(!game.getWinningPositions()[0].equals(new Position(-1, -1)))	{
+                                    directionsLabel.setText("Player " + game.getWinner() + " has won the game!");
+                                    displayWinningRow();
+                                    timer.start();
+                                }
+                                else
+                                    directionsLabel.setText("The game has ended in a draw.");
+                            }else{
+                                computer.computerMove(game.getBoard());
+                                refreshBoard(game.getBoard());
+                                if(game.gameOver())	{
+                                    if(!game.getWinningPositions()[0].equals(new Position(-1, -1)))	{
+                                        directionsLabel.setText("Player " + game.getWinner() + " has won the game!");
+                                        displayWinningRow();
+                                        timer.start();
+                                    }
+                                    else
+                                        directionsLabel.setText("The game has ended in a draw.");
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            gameOverProtocol();
         }
         //the timer gets started by the displayWinningRow method, so this test is always false
         //until the game is won
@@ -122,38 +140,6 @@ public class SinglePlayerConnectFourGUI extends JFrame implements ActionListener
                 else
                     buttons[row][col].setIcon(gameWonIcon);
             }
-        }
-    }
-
-    private void playerTurn(ActionEvent e){
-        for(int r = 0; r < 6; r++)	{
-            for(int c = 0; c < 7; c++)	{
-                if(e.getSource() == buttons[r][c])	{
-                    game.play(c);
-                    refreshBoard(game.getBoard());
-                    if(game.gameOver())	{
-                        if(!game.getWinningPositions()[0].equals(new Position(-1, -1)))	{
-                            directionsLabel.setText("Player " + game.getWinner() + " has won the game!");
-                            displayWinningRow();
-                            timer.start();
-                        }
-                        else
-                            directionsLabel.setText("The game has ended in a draw.");
-                    }
-                }
-            }
-        }
-    }
-
-    private void gameOverProtocol(){
-        if(game.gameOver())	{
-            if(!game.getWinningPositions()[0].equals(new Position(-1, -1)))	{
-                directionsLabel.setText("Player " + game.getWinner() + " has won the game!");
-                displayWinningRow();
-                timer.start();
-            }
-            else
-                directionsLabel.setText("The game has ended in a draw.");
         }
     }
 
